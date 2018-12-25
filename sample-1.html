@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <title>Vue.js でREST APIから取得したデータの切り替え練習</title>
+  <meta charset="utf-8">
+  <script src="https://unpkg.com/vue/dist/vue.js"></script>
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+
+<h1>古川日出男の著作一覧</h1>
+
+<div id="counter">
+  <div>{{arr[count]}}</div>
+
+    <button v-on:click="decrement">前へ</button>
+    <button v-on:click="increment">次へ</button>
+</div>
+<script>
+  "use strict";
+  const list = axios('https://www.googleapis.com/books/v1/volumes?q=%E5%8F%A4%E5%B7%9D%E6%97%A5%E5%87%BA%E7%94%B7');
+  const vm = new Vue({
+    el: '#counter',
+    data() {
+      return {
+        arr: [],
+        count: 0,
+      }
+    },
+    methods: {
+      increment() {
+        if (this.count < this.arr.length - 1) {
+          this.count++;
+        }
+      },
+      decrement() {
+        if (this.count > 0) {
+          this.count--
+        }
+      }
+    }
+  });
+  Promise.resolve(list).then(function(response) {
+    for (let i in response.data.items) {
+      vm.arr.push(response.data.items[i].volumeInfo.title);
+    }
+  });
+</script>
+
+</body>
+</html>
